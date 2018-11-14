@@ -5,12 +5,14 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.net.Uri;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.saifi369.androidrestfulapi.network.MyIntentService;
 import com.saifi369.androidrestfulapi.utils.NetworkHelper;
@@ -20,7 +22,10 @@ public class MainActivity extends AppCompatActivity {
     private TextView mLog;
     private boolean isNetworkOk;
 
-    public static final String JSON_URL="https://localhost/pakinfo/json/itemsfeed.php";
+    //10.0.2.2 is used to refer to local machine's localhost
+    //using localhost or 127.0.0.1 refers to emulator's localhost
+    public static final String JSON_URL="http://10.0.2.2/pakinfo/json/itemsfeed.php";
+    public static final String WEB_URL="https://jsonplaceholder.typicode.com/posts/1";
 
     private BroadcastReceiver mReceiver=new BroadcastReceiver() {
         @Override
@@ -44,10 +49,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void runCode(View view) {
-
-        Intent intent=new Intent(MainActivity.this,MyIntentService.class);
-        startService(intent);
-
+        
+        if(isNetworkOk){
+            Intent intent=new Intent(MainActivity.this,MyIntentService.class);
+            intent.setData(Uri.parse(JSON_URL));
+            startService(intent);
+        }else
+            Toast.makeText(this, "Network not available...", Toast.LENGTH_SHORT).show();
     }
 
     private void logOutput(String data){

@@ -2,7 +2,12 @@ package com.saifi369.androidrestfulapi.network;
 
 import android.app.IntentService;
 import android.content.Intent;
+import android.net.Uri;
 import android.support.v4.content.LocalBroadcastManager;
+
+import com.saifi369.androidrestfulapi.utils.HttpHelper;
+
+import java.io.IOException;
 
 
 public class MyIntentService extends IntentService {
@@ -17,9 +22,16 @@ public class MyIntentService extends IntentService {
     @Override
     protected void onHandleIntent(Intent intent) {
 
-        //
+        Uri uri = intent.getData();
+        String data;
+        try {
+            data = HttpHelper.downloadUrl(uri.toString());
+        } catch (IOException e) {
+            e.printStackTrace();
+            data=e.getMessage();
+        }
 
-        sendMessageToUI( "Dummy data");
+        sendMessageToUI( data);
 
     }
 
