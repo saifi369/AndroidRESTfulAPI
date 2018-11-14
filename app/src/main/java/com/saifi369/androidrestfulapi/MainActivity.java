@@ -14,6 +14,7 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.saifi369.androidrestfulapi.model.CityItem;
 import com.saifi369.androidrestfulapi.network.MyIntentService;
 import com.saifi369.androidrestfulapi.utils.NetworkHelper;
 
@@ -30,8 +31,13 @@ public class MainActivity extends AppCompatActivity {
     private BroadcastReceiver mReceiver=new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            String data=intent.getStringExtra(MyIntentService.SERVICE_PAYLOAD);
-            logOutput(data);
+
+            CityItem[] cityItems= (CityItem[])
+                    intent.getParcelableArrayExtra(MyIntentService.SERVICE_PAYLOAD);
+
+            for (CityItem item:cityItems){
+                logOutput(item.getCityname()+"\n");
+            }
         }
     };
 
@@ -60,7 +66,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void logOutput(String data){
         Log.d(TAG, "logOutput: "+data);
-        mLog.setText(data+"\n");
+        mLog.append(data+"\n");
     }
 
     private void initViews() {

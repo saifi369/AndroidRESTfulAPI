@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.net.Uri;
 import android.support.v4.content.LocalBroadcastManager;
 
+import com.google.gson.Gson;
+import com.saifi369.androidrestfulapi.model.CityItem;
 import com.saifi369.androidrestfulapi.utils.HttpHelper;
 
 import java.io.IOException;
@@ -28,14 +30,17 @@ public class MyIntentService extends IntentService {
             data = HttpHelper.downloadUrl(uri.toString());
         } catch (IOException e) {
             e.printStackTrace();
-            data=e.getMessage();
+            return;
         }
 
-        sendMessageToUI( data);
+        Gson gson=new Gson();
+        CityItem[] cityItems=gson.fromJson(data,CityItem[].class);
+
+        sendMessageToUI( cityItems);
 
     }
 
-    private void sendMessageToUI(String data) {
+    private void sendMessageToUI(CityItem[] data) {
         Intent intent=new Intent(SERVICE_MESSAGE);
         intent.putExtra(SERVICE_PAYLOAD,data);
 
