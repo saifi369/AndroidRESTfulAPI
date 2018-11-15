@@ -1,24 +1,34 @@
 package com.saifi369.androidrestfulapi.utils;
 
+import android.util.Base64;
+
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 
 public class HttpHelper {
 
-    public static String downloadUrl(String address) throws IOException {
+    public static String downloadUrl(String address,String userName,String password) throws Exception {
+
+        //Authorization: Basic {base64_encode(username:password)}
+
+        byte[] loginBytes=(userName+":"+password).getBytes();
+
+        StringBuilder stringBuilder=new StringBuilder()
+                .append("Basic ")
+                .append(Base64.encodeToString(loginBytes,Base64.DEFAULT));
 
 
         InputStream inputStream=null;
 
         try {
-            URL url=new URL(address);
-            HttpURLConnection connection= (HttpURLConnection) url.openConnection();
+            URL url = new URL(address);
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 
+            connection.setRequestProperty("Authorization", stringBuilder.toString());
             connection.setReadTimeout(15000);
             connection.setConnectTimeout(10000);
             connection.setDoInput(true);
@@ -26,24 +36,20 @@ public class HttpHelper {
 
             connection.connect();
 
-            int responseCode=connection.getResponseCode();
-            if(responseCode!=200){
-                throw new Exception("Error: Got response code: "+responseCode);
+            int responseCode = connection.getResponseCode();
+            if (responseCode != 200) {
+                throw new Exception("Error: Got response code: " + responseCode);
             }
 
-            inputStream=connection.getInputStream();
+            inputStream = connection.getInputStream();
 
             return readStream(inputStream);
-
-        } catch (Exception e) {
-            e.printStackTrace();
         }
         finally {
             if (inputStream != null) {
                 inputStream.close();
             }
         }
-        return null;
     }
 
     private static String readStream(InputStream stream) throws IOException {

@@ -25,18 +25,26 @@ public class MainActivity extends AppCompatActivity {
 
     //10.0.2.2 is used to refer to local machine's localhost
     //using localhost or 127.0.0.1 refers to emulator's localhost
-    public static final String JSON_URL="http://10.0.2.2/pakinfo/json/itemsfeed.php";
+    public static final String JSON_URL="http://10.0.2.2/pakinfocopy/json/itemsfeed.php";
     public static final String WEB_URL="https://jsonplaceholder.typicode.com/posts/1";
 
     private BroadcastReceiver mReceiver=new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
 
-            CityItem[] cityItems= (CityItem[])
-                    intent.getParcelableArrayExtra(MyIntentService.SERVICE_PAYLOAD);
+            if(intent.hasExtra(MyIntentService.SERVICE_PAYLOAD)){
+                CityItem[] cityItems= (CityItem[])
+                        intent.getParcelableArrayExtra(MyIntentService.SERVICE_PAYLOAD);
 
-            for (CityItem item:cityItems){
-                logOutput(item.getCityname()+"\n");
+                for (CityItem item:cityItems){
+                    logOutput(item.getCityname()+"\n");
+                }
+            }
+            else if(intent.hasExtra(MyIntentService.SERVICE_EXPECTION)){
+                String message=intent.getStringExtra(MyIntentService.SERVICE_EXPECTION);
+
+                Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
+                logOutput(message);
             }
         }
     };

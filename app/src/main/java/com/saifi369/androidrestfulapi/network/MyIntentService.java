@@ -16,6 +16,7 @@ public class MyIntentService extends IntentService {
 
     public static final String SERVICE_PAYLOAD = "SERVICE_PAYLOAD";
     public static final String SERVICE_MESSAGE = "SERVICE_MESSAGE";
+    public static final String SERVICE_EXPECTION = "SERVICE_EXPECTION";
 
     public MyIntentService() {
         super("MyIntentService");
@@ -27,9 +28,10 @@ public class MyIntentService extends IntentService {
         Uri uri = intent.getData();
         String data;
         try {
-            data = HttpHelper.downloadUrl(uri.toString());
-        } catch (IOException e) {
+            data = HttpHelper.downloadUrl(uri.toString(),"admin","lolx");
+        } catch (Exception e) {
             e.printStackTrace();
+            sendMessageToUI(e);
             return;
         }
 
@@ -38,6 +40,14 @@ public class MyIntentService extends IntentService {
 
         sendMessageToUI( cityItems);
 
+    }
+
+    private void sendMessageToUI(Exception e) {
+        Intent intent=new Intent(SERVICE_MESSAGE);
+        intent.putExtra(SERVICE_EXPECTION,e.getMessage());
+
+        LocalBroadcastManager.getInstance(this)
+                .sendBroadcast(intent);
     }
 
     private void sendMessageToUI(CityItem[] data) {
