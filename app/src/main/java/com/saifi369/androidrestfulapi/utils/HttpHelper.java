@@ -34,6 +34,7 @@ public class HttpHelper {
             connection.setDoInput(true);
             connection.setRequestMethod("GET");
 
+
             connection.connect();
 
             int responseCode = connection.getResponseCode();
