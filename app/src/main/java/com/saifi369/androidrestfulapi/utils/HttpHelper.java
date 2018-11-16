@@ -1,7 +1,5 @@
 package com.saifi369.androidrestfulapi.utils;
 
-import android.util.Base64;
-
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -11,29 +9,27 @@ import java.net.URL;
 
 public class HttpHelper {
 
-    public static String downloadUrl(String address,String userName,String password) throws Exception {
-
-        //Authorization: Basic {base64_encode(username:password)}
-
-        byte[] loginBytes=(userName+":"+password).getBytes();
-
-        StringBuilder stringBuilder=new StringBuilder()
-                .append("Basic ")
-                .append(Base64.encodeToString(loginBytes,Base64.DEFAULT));
-
+    public static String downloadUrl(RequsetPackage requsetPackage) throws Exception {
 
         InputStream inputStream=null;
+
+        String address=requsetPackage.getEndPoint();
+        String encodedParams=requsetPackage.getEncodedParams();
+
+        if(requsetPackage.getMethod().equals("GET") &&
+                encodedParams.length()>0){
+            address= String.format("%s?%s",address,encodedParams);
+        }
+
 
         try {
             URL url = new URL(address);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 
-            connection.setRequestProperty("Authorization", stringBuilder.toString());
             connection.setReadTimeout(15000);
             connection.setConnectTimeout(10000);
             connection.setDoInput(true);
-            connection.setRequestMethod("GET");
-
+            connection.setRequestMethod(requsetPackage.getMethod());
 
             connection.connect();
 

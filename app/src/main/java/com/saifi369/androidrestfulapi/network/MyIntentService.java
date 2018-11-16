@@ -2,14 +2,12 @@ package com.saifi369.androidrestfulapi.network;
 
 import android.app.IntentService;
 import android.content.Intent;
-import android.net.Uri;
 import android.support.v4.content.LocalBroadcastManager;
 
 import com.google.gson.Gson;
 import com.saifi369.androidrestfulapi.model.CityItem;
 import com.saifi369.androidrestfulapi.utils.HttpHelper;
-
-import java.io.IOException;
+import com.saifi369.androidrestfulapi.utils.RequsetPackage;
 
 
 public class MyIntentService extends IntentService {
@@ -17,6 +15,7 @@ public class MyIntentService extends IntentService {
     public static final String SERVICE_PAYLOAD = "SERVICE_PAYLOAD";
     public static final String SERVICE_MESSAGE = "SERVICE_MESSAGE";
     public static final String SERVICE_EXPECTION = "SERVICE_EXPECTION";
+    public static final String SERVICE_REQUEST_PACKAGE = "SERVICE_REQUEST_PACKAGE";
 
     public MyIntentService() {
         super("MyIntentService");
@@ -25,10 +24,13 @@ public class MyIntentService extends IntentService {
     @Override
     protected void onHandleIntent(Intent intent) {
 
-        Uri uri = intent.getData();
+        RequsetPackage requsetPackage=
+                (RequsetPackage) intent.getParcelableExtra(SERVICE_REQUEST_PACKAGE);
+
+
         String data;
         try {
-            data = HttpHelper.downloadUrl(uri.toString(),"admin","lolx");
+            data = HttpHelper.downloadUrl(requsetPackage);
         } catch (Exception e) {
             e.printStackTrace();
             sendMessageToUI(e);

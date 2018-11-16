@@ -1,14 +1,12 @@
 package com.saifi369.androidrestfulapi;
 
-import android.Manifest;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.net.Uri;
+import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
@@ -17,6 +15,7 @@ import android.widget.Toast;
 import com.saifi369.androidrestfulapi.model.CityItem;
 import com.saifi369.androidrestfulapi.network.MyIntentService;
 import com.saifi369.androidrestfulapi.utils.NetworkHelper;
+import com.saifi369.androidrestfulapi.utils.RequsetPackage;
 
 public class MainActivity extends AppCompatActivity {
     public static final String TAG = "MyTag";
@@ -25,7 +24,7 @@ public class MainActivity extends AppCompatActivity {
 
     //10.0.2.2 is used to refer to local machine's localhost
     //using localhost or 127.0.0.1 refers to emulator's localhost
-    public static final String JSON_URL="http://10.0.2.2/pakinfocopy/json/itemsfeed.php";
+    public static final String JSON_URL="http://10.0.2.2/pakinfo/json/itemsfeed.php";
     public static final String WEB_URL="https://jsonplaceholder.typicode.com/posts/1";
 
     private BroadcastReceiver mReceiver=new BroadcastReceiver() {
@@ -58,15 +57,20 @@ public class MainActivity extends AppCompatActivity {
 
         isNetworkOk=NetworkHelper.isNetworkAvailable(this);
 
-        logOutput("Network : "+isNetworkOk);
+        mLog.setText("Network : "+isNetworkOk+"\n");
 
     }
 
     public void runCode(View view) {
         
         if(isNetworkOk){
+
+            RequsetPackage requsetPackage=new RequsetPackage();
+            requsetPackage.setEndPoint(JSON_URL);
+//            requsetPackage.setParams("province","Punjab");
+
             Intent intent=new Intent(MainActivity.this,MyIntentService.class);
-            intent.setData(Uri.parse(JSON_URL));
+            intent.putExtra(MyIntentService.SERVICE_REQUEST_PACKAGE,requsetPackage);
             startService(intent);
         }else
             Toast.makeText(this, "Network not available...", Toast.LENGTH_SHORT).show();
