@@ -4,9 +4,10 @@ import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStreamWriter;
-import java.net.HttpURLConnection;
-import java.net.URL;
+
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 
 public class HttpHelper {
 
@@ -24,45 +25,64 @@ public class HttpHelper {
             address= String.format("%s?%s",address,encodedParams);
         }
 
+        //GET request with okhttp
 
-        try {
-            URL url = new URL(address);
-            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+        OkHttpClient client=new OkHttpClient();
 
-            connection.setReadTimeout(15000);
-            connection.setConnectTimeout(10000);
-            connection.setDoInput(true);
-            connection.setRequestMethod(requsetPackage.getMethod());
+        Request.Builder builder=new Request.Builder()
+                .url(address);
 
-            //checking for parameters to send in POST request
-            //POST request paremeters are sent in request body
-            if(requsetPackage.getMethod().equals("POST") &&
-                    encodedParams.length()>0){
-                OutputStreamWriter writer=new OutputStreamWriter(connection.getOutputStream());
-                writer.write(requsetPackage.getEncodedParams());
-                writer.flush();
-                writer.close();
-            }
+        Request request=builder.build();
 
+        Response response=client.newCall(request).execute();
 
-            connection.connect();
-
-            int responseCode = connection.getResponseCode();
-            if (responseCode != 200) {
-                throw new Exception("Error: Got response code: " + responseCode);
-            }
-
-            inputStream = connection.getInputStream();
-
-            return readStream(inputStream);
+        if(response.isSuccessful()){
+            return response.body().string();
         }
-        finally {
-            if (inputStream != null) {
-                inputStream.close();
-            }
+        else{
+            throw new Exception("Error: Got response code: "+response.code());
         }
+
+        //used for making connections with httpurl connections
+//        try {
+//            URL url = new URL(address);
+//            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+//
+//            connection.setReadTimeout(15000);
+//            connection.setConnectTimeout(10000);
+//            connection.setDoInput(true);
+//            connection.setRequestMethod(requsetPackage.getMethod());
+//
+//            //checking for parameters to send in POST request
+//            //POST request paremeters are sent in request body
+//            if(requsetPackage.getMethod().equals("POST") &&
+//                    encodedParams.length()>0){
+//                OutputStreamWriter writer=new OutputStreamWriter(connection.getOutputStream());
+//                writer.write(requsetPackage.getEncodedParams());
+//                writer.flush();
+//                writer.close();
+//            }
+//
+//
+//            connection.connect();
+//
+//            int responseCode = connection.getResponseCode();
+//            if (responseCode != 200) {
+//                throw new Exception("Error: Got response code: " + responseCode);
+//            }
+//
+//            inputStream = connection.getInputStream();
+//
+//            return readStream(inputStream);
+//        }
+//        finally {
+//            if (inputStream != null) {
+//                inputStream.close();
+//            }
+//        }
     }
-
+    //only used for connections with httpurl connection
+    //not nedded for okhttp
     private static String readStream(InputStream stream) throws IOException {
 
         byte[] buffer = new byte[1024];
