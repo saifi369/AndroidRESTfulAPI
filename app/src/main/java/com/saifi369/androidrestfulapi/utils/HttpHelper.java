@@ -4,9 +4,12 @@ import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Map;
 
+import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
+import okhttp3.RequestBody;
 import okhttp3.Response;
 
 public class HttpHelper {
@@ -29,10 +32,28 @@ public class HttpHelper {
 
         OkHttpClient client=new OkHttpClient();
 
-        Request.Builder builder=new Request.Builder()
+        Request.Builder requestBuilder=new Request.Builder()
                 .url(address);
 
-        Request request=builder.build();
+        //POST request with okhttp
+        if(requsetPackage.getMethod().equals("POST")){
+
+            MultipartBody.Builder bodyBuilder=new MultipartBody.Builder()
+                    .setType(MultipartBody.FORM);
+
+            Map<String,String> params=requsetPackage.getParams();
+            for(String key:params.keySet()){
+
+                bodyBuilder.addFormDataPart(key,params.get(key));
+
+                RequestBody requestBody=bodyBuilder.build();
+
+                requestBuilder.method(requsetPackage.getMethod(),requestBody);
+            }
+
+        }
+
+        Request request=requestBuilder.build();
 
         Response response=client.newCall(request).execute();
 

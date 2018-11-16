@@ -68,7 +68,6 @@ public class MainActivity extends AppCompatActivity {
             RequsetPackage requsetPackage=new RequsetPackage();
             requsetPackage.setEndPoint(JSON_URL);
             requsetPackage.setMethod("GET");
-            requsetPackage.setParams("id","13");
             requsetPackage.setParams("province","Punjab");
 
             Intent intent=new Intent(MainActivity.this,MyIntentService.class);
