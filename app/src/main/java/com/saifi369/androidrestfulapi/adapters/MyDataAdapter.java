@@ -15,6 +15,7 @@ import android.widget.TextView;
 
 import com.saifi369.androidrestfulapi.R;
 import com.saifi369.androidrestfulapi.model.CityItem;
+import com.saifi369.androidrestfulapi.utils.CacheImageManager;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -28,13 +29,13 @@ public class MyDataAdapter extends RecyclerView.Adapter<MyDataAdapter.MyViewHold
 
     public static final String TAG = "MyTag";
     private List<CityItem> mDataList;
-    private Context context;
+    private Context mContext;
     private Map<String,Bitmap> mBitmaps =new HashMap<>();
     Random random=new Random();
 
 
-    public MyDataAdapter(Context context, List<CityItem> mDataList) {
-        this.context=context;
+    public MyDataAdapter(Context mContext, List<CityItem> mDataList) {
+        this.mContext = mContext;
         this.mDataList=mDataList;
     }
 
@@ -42,7 +43,7 @@ public class MyDataAdapter extends RecyclerView.Adapter<MyDataAdapter.MyViewHold
     @Override
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 
-        View view= LayoutInflater.from(context).inflate(R.layout.list_item_layout,parent,false);
+        View view= LayoutInflater.from(mContext).inflate(R.layout.list_item_layout,parent,false);
 
         return new MyViewHolder(view);
 
@@ -56,18 +57,25 @@ public class MyDataAdapter extends RecyclerView.Adapter<MyDataAdapter.MyViewHold
 
         holder.textView.setText(cityDataItem.getCityname());
 
-        if(mBitmaps.containsKey(cityDataItem.getCityname())){
-            holder.imageView.setImageBitmap(mBitmaps.get(cityDataItem.getCityname()));
-        }else {
-            MyImageTask task=new MyImageTask();
-            task.setViewHolder(holder);
-            task.execute(cityDataItem);
+        try{
+            Bitmap bitmap=CacheImageManager.getImage(mContext,cityDataItem);
+
+            if (bitmap == null) {
+                MyImageTask task=new MyImageTask();
+                task.setViewHolder(holder);
+                task.execute(cityDataItem);
+            }else {
+                holder.imageView.setImageBitmap(bitmap);
+            }
+
+        }catch (Exception e){
+            e.printStackTrace();
         }
 
 
 //        InputStream inputStream=null;
 //        try{
-//            inputStream = context.getAssets().open(cityDataItem.getImage());
+//            inputStream = mContext.getAssets().open(cityDataItem.getImage());
 //            Bitmap bitmap= BitmapFactory.decodeStream(inputStream);
 //            holder.imageView.setImageBitmap(bitmap);
 //            Log.d(TAG, "getView: Image Downloaded: "+cityDataItem.getImage());
@@ -155,7 +163,7 @@ public class MyDataAdapter extends RecyclerView.Adapter<MyDataAdapter.MyViewHold
         protected void onPostExecute(Bitmap bitmap) {
             super.onPostExecute(bitmap);
             mViewHolder.imageView.setImageBitmap(bitmap);
-            mBitmaps.put(mCityItem.getCityname(),bitmap);
+            CacheImageManager.putImage(mContext,mCityItem,bitmap);
         }
     }
 }
