@@ -1,16 +1,18 @@
 package com.saifi369.androidrestfulapi.ui;
 
-import android.app.LoaderManager;
-import android.content.AsyncTaskLoader;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.Loader;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.AsyncTaskLoader;
+import android.support.v4.content.Loader;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -29,6 +31,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -41,6 +44,7 @@ public class ListActivity extends AppCompatActivity implements LoaderManager.Loa
     private RecyclerView mRecyclerView;
 //    private CityDataSource mDataSource;
     private MyDataAdapter mDataAdapter;
+    private Map<String,Bitmap> mBitmaps;
 
     private BroadcastReceiver mReceiver=new BroadcastReceiver() {
         @Override
@@ -51,7 +55,11 @@ public class ListActivity extends AppCompatActivity implements LoaderManager.Loa
                         intent.getParcelableArrayExtra(MyIntentService.SERVICE_PAYLOAD);
 
                 mDataList=Arrays.asList(cityItems);
-                Toast.makeText(context, mDataList.size()+" Items downloaded", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, "Items Downloaded: "+mDataList.size(), Toast.LENGTH_SHORT).show();
+
+                getSupportLoaderManager().initLoader(0,null,ListActivity.this)
+                        .forceLoad();
+
                 Log.d(TAG, "onReceive: called");
             }
             else if(intent.hasExtra(MyIntentService.SERVICE_EXPECTION)){
@@ -127,7 +135,7 @@ public class ListActivity extends AppCompatActivity implements LoaderManager.Loa
 
     private void showRecyclerData(String prov) {
 //        mDataList=mDataSource.getAllItems(prov);
-        mDataAdapter =new MyDataAdapter(mDataList,this);
+        mDataAdapter =new MyDataAdapter(this,mDataList, mBitmaps);
         mRecyclerView.setAdapter(mDataAdapter);
     }
 
@@ -147,49 +155,53 @@ public class ListActivity extends AppCompatActivity implements LoaderManager.Loa
                 .unregisterReceiver(mReceiver);
     }
 
+    @NonNull
     @Override
-    public Loader<Map<String, Bitmap>> onCreateLoader(int id, Bundle args) {
-
+    public Loader<Map<String,Bitmap>> onCreateLoader(int id, @Nullable Bundle args) {
         return new MyImageTask(this,mDataList);
     }
 
     @Override
-    public void onLoadFinished(Loader<Map<String, Bitmap>> loader, Map<String, Bitmap> data) {
-        displayData(data);
+    public void onLoadFinished(@NonNull Loader<Map<String,Bitmap>> loader, Map<String,Bitmap> bitmapMap) {
+
+        mBitmaps=bitmapMap;
+        mDataAdapter =new MyDataAdapter(this,mDataList,mBitmaps);
+        mRecyclerView.setAdapter(mDataAdapter);
+        showRecyclerData(null);
     }
 
     @Override
-    public void onLoaderReset(Loader<Map<String, Bitmap>> loader) {
+    public void onLoaderReset(@NonNull Loader<Map<String,Bitmap>> loader) {
 
     }
 
-    private void displayData(Map<String, Bitmap> data) {
-        mDataAdapter = new MyDataAdapter(this,mDataList,data);
-    }
-    private static class MyImageTask extends AsyncTaskLoader<Map<String, Bitmap>> {
+    private static class MyImageTask extends AsyncTaskLoader<Map<String,Bitmap>>{
+
+        private static final String PHOTO_BASE_URL="http://10.0.2.2/pakinfo/images/";
+        private static List<CityItem> mCityList;
 
 
-        private static String IMAGE_BASE_URL="https://localhost/pakinfo/images/";
-        private List<CityItem> mImageItems;
-        private Map<String,Bitmap> mImages;
-        public MyImageTask(Context context, List<CityItem> cityItems) {
+        public MyImageTask(@NonNull Context context,List<CityItem> cityItems) {
             super(context);
-            this.mImageItems=cityItems;
+            mCityList=cityItems;
         }
 
+        @Nullable
         @Override
         public Map<String, Bitmap> loadInBackground() {
 
-            for (CityItem item:mImageItems){
+            Map<String,Bitmap> map=new HashMap<>();
 
-                IMAGE_BASE_URL+=item.getImage();
-                InputStream inputStream = null;
+            for (CityItem item:mCityList) {
+                String imageurl=PHOTO_BASE_URL+item.getImage();
+
+                InputStream inputStream=null;
 
                 try {
-                    URL url=new URL(IMAGE_BASE_URL);
-                    inputStream= (InputStream) url.getContent();
+                    URL imageUrl=new URL(imageurl);
+                    inputStream = (InputStream) imageUrl.getContent();
                     Bitmap bitmap=BitmapFactory.decodeStream(inputStream);
-                    mImages.put(item.getCityname(),bitmap);
+                    map.put(item.getCityname(),bitmap);
 
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -203,8 +215,9 @@ public class ListActivity extends AppCompatActivity implements LoaderManager.Loa
                         }
                     }
                 }
+
             }
-            return mImages;
+            return map;
         }
     }
 

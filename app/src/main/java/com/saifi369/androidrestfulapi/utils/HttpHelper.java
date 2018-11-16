@@ -1,7 +1,5 @@
 package com.saifi369.androidrestfulapi.utils;
 
-import android.util.Base64;
-
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -15,32 +13,18 @@ public class HttpHelper {
 
         //Authorization: Basic {base64_encode(username:password)}
 
-<<<<<<< Updated upstream
-        byte[] loginBytes=(userName+":"+password).getBytes();
-
-        StringBuilder stringBuilder=new StringBuilder()
-                .append("Basic ")
-                .append(Base64.encodeToString(loginBytes,Base64.DEFAULT));
-
-=======
 //        byte[] loginBytes=(userName+":"+password).getBytes();
 //
 //        StringBuilder stringBuilder=new StringBuilder()
 //                .append("Basic ")
 //                .append(Base64.encodeToString(loginBytes,Base64.DEFAULT));
->>>>>>> Stashed changes
 
         InputStream inputStream=null;
 
         try {
             URL url = new URL(address);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-<<<<<<< Updated upstream
-
-            connection.setRequestProperty("Authorization", stringBuilder.toString());
-=======
 //            connection.setRequestProperty("Authorization", stringBuilder.toString());
->>>>>>> Stashed changes
             connection.setReadTimeout(15000);
             connection.setConnectTimeout(10000);
             connection.setDoInput(true);

@@ -7,24 +7,17 @@
     tools:context=".MainActivity">
 
     <ScrollView
-<<<<<<< Updated upstream
-=======
         android:id="@+id/scrollView2"
->>>>>>> Stashed changes
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_margin="8dp"
         app:layout_constraintBottom_toTopOf="@+id/runCode"
-<<<<<<< Updated upstream
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintLeft_toLeftOf="parent">
-=======
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent">
->>>>>>> Stashed changes
-
         <TextView
             android:id="@+id/textView"
             android:layout_width="wrap_content"
@@ -37,14 +30,7 @@
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.033" />
-<<<<<<< Updated upstream
-
     </ScrollView>
-
-
-=======
-    </ScrollView>
->>>>>>> Stashed changes
 
     <Button
         android:id="@+id/runCode"

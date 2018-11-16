@@ -2,7 +2,6 @@ package com.saifi369.androidrestfulapi.adapters;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -11,12 +10,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+
 import com.saifi369.androidrestfulapi.R;
 import com.saifi369.androidrestfulapi.model.CityItem;
-import com.saifi369.androidrestfulapi.ui.ListActivity;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
 
@@ -27,15 +24,11 @@ public class MyDataAdapter extends RecyclerView.Adapter<MyDataAdapter.MyViewHold
     private Context context;
     private Map<String,Bitmap> mBitmaps;
 
-    public MyDataAdapter(List<CityItem> mDataList, Context context) {
-        this.mDataList = mDataList;
-        this.context = context;
-    }
 
-    public MyDataAdapter(Context context, List<CityItem> mDataList, Map<String, Bitmap> bitmapMap) {
+    public MyDataAdapter(Context context, List<CityItem> mDataList, Map<String, Bitmap> mBitmaps) {
         this.context=context;
         this.mDataList=mDataList;
-        this.mBitmaps=bitmapMap;
+        this.mBitmaps=mBitmaps;
     }
 
     @NonNull
@@ -55,7 +48,6 @@ public class MyDataAdapter extends RecyclerView.Adapter<MyDataAdapter.MyViewHold
         Log.d(TAG, "onBindViewHolder: Name: "+cityDataItem.getCityname()+" : "+cityDataItem.getImage());
 
         holder.textView.setText(cityDataItem.getCityname());
-
         holder.imageView.setImageBitmap(mBitmaps.get(cityDataItem.getCityname()));
 
 //        InputStream inputStream=null;

@@ -37,7 +37,7 @@ public class SampleDataProvider {
 
         addItem(new CityDataItem(
                 null,"Peshawar",6,"KPK",1970042,"Peshawar is the capital city of Khyber Pakhtunkhwa province. It lies in the broad valley near the eastern end of Khyber Pass, close to the border with Afghanistan. Peshawar's history goest back to 539 BC, making it the oldest city in Pakistan. It has been a gateway to most of the explorers and invaders of the past starting from Alexander the Great to the Mauryans, Huns, Muslim explorers Abdullah Shah Durrani, Mahmud Ghaznavi and the Mughals.",
-                "peshawar.jpg"));
+                "peshwar.jpg"));
 
         addItem(new CityDataItem(
                 null,"Multan",7,"Punjab",1871843,"Multan is a city located in central Punjab along the banks of Chenab river. It is called the \"City of Saints\" because of its large number of tombs and shrines. The region of Multan has been continuously inhabited for the past 5000 years. Multan is believed to have been the Malli capital that was conquered by Alexander the Great in 326 BCE as part of the Mallian Campaign. ",
@@ -89,7 +89,7 @@ public class SampleDataProvider {
 
         addItem(new CityDataItem(
                 null,"Peshawar",6,"KPK",1970042,"Peshawar is the capital city of Khyber Pakhtunkhwa province. It lies in the broad valley near the eastern end of Khyber Pass, close to the border with Afghanistan. Peshawar's history goest back to 539 BC, making it the oldest city in Pakistan. It has been a gateway to most of the explorers and invaders of the past starting from Alexander the Great to the Mauryans, Huns, Muslim explorers Abdullah Shah Durrani, Mahmud Ghaznavi and the Mughals.",
-                "peshawar.jpg"));
+                "peshwar.jpg"));
 
         addItem(new CityDataItem(
                 null,"Multan",7,"Punjab",1871843,"Multan is a city located in central Punjab along the banks of Chenab river. It is called the \"City of Saints\" because of its large number of tombs and shrines. The region of Multan has been continuously inhabited for the past 5000 years. Multan is believed to have been the Malli capital that was conquered by Alexander the Great in 326 BCE as part of the Mallian Campaign. ",
