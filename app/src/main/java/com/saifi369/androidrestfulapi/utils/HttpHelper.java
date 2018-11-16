@@ -4,6 +4,7 @@ import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
@@ -16,6 +17,8 @@ public class HttpHelper {
         String address=requsetPackage.getEndPoint();
         String encodedParams=requsetPackage.getEncodedParams();
 
+        //checking for parameters to send in GET request
+        //GET request paremeters are sent in url
         if(requsetPackage.getMethod().equals("GET") &&
                 encodedParams.length()>0){
             address= String.format("%s?%s",address,encodedParams);
@@ -30,6 +33,17 @@ public class HttpHelper {
             connection.setConnectTimeout(10000);
             connection.setDoInput(true);
             connection.setRequestMethod(requsetPackage.getMethod());
+
+            //checking for parameters to send in POST request
+            //POST request paremeters are sent in request body
+            if(requsetPackage.getMethod().equals("POST") &&
+                    encodedParams.length()>0){
+                OutputStreamWriter writer=new OutputStreamWriter(connection.getOutputStream());
+                writer.write(requsetPackage.getEncodedParams());
+                writer.flush();
+                writer.close();
+            }
+
 
             connection.connect();
 
