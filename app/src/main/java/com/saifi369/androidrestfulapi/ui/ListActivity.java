@@ -56,9 +56,9 @@ public class ListActivity extends AppCompatActivity implements LoaderManager.Loa
 
                 mDataList=Arrays.asList(cityItems);
                 Toast.makeText(context, "Items Downloaded: "+mDataList.size(), Toast.LENGTH_SHORT).show();
-
-                getSupportLoaderManager().initLoader(0,null,ListActivity.this)
-                        .forceLoad();
+                showRecyclerData(null);
+//                getSupportLoaderManager().initLoader(0,null,ListActivity.this)
+//                        .forceLoad();
 
                 Log.d(TAG, "onReceive: called");
             }
@@ -136,7 +136,7 @@ public class ListActivity extends AppCompatActivity implements LoaderManager.Loa
 
     private void showRecyclerData(String prov) {
 //        mDataList=mDataSource.getAllItems(prov);
-        mDataAdapter =new MyDataAdapter(this,mDataList, mBitmaps);
+        mDataAdapter =new MyDataAdapter(this,mDataList);
         mRecyclerView.setAdapter(mDataAdapter);
     }
 
@@ -166,7 +166,7 @@ public class ListActivity extends AppCompatActivity implements LoaderManager.Loa
     public void onLoadFinished(@NonNull Loader<Map<String,Bitmap>> loader, Map<String,Bitmap> bitmapMap) {
 
         mBitmaps=bitmapMap;
-        mDataAdapter =new MyDataAdapter(this,mDataList,mBitmaps);
+        mDataAdapter =new MyDataAdapter(this,mDataList);
         mRecyclerView.setAdapter(mDataAdapter);
         showRecyclerData(null);
     }
