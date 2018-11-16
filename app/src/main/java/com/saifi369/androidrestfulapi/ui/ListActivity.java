@@ -70,6 +70,7 @@ public class ListActivity extends AppCompatActivity implements LoaderManager.Loa
         }
     };
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
